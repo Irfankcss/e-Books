@@ -85,7 +85,6 @@ namespace eBooksBackend.Data.Controllers.Users
         [HttpPost]
         public async Task<ActionResult> CreateUser([FromBody] User user)
         {
-            // Validacija unosa
             if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
             {
                 return BadRequest("Username and Password are required.");
@@ -101,14 +100,13 @@ namespace eBooksBackend.Data.Controllers.Users
                 return Conflict("A user with this email already exists.");
             }
 
-            // Hashiranje lozinke
             user.PasswordHash = HashPassword(user.PasswordHash);
 
-            // Postavljanje dodatnih polja
-            user.CreatedAt = DateTime.UtcNow;
-            user.Role = string.IsNullOrEmpty(user.Role) ? "User" : user.Role; // Podrazumevana uloga je "User"
 
-            // Dodavanje korisnika u bazu
+            user.CreatedAt = DateTime.UtcNow;
+            user.Role = string.IsNullOrEmpty(user.Role) ? "User" : user.Role;
+
+
             _dbContext.users.Add(user);
             await _dbContext.SaveChangesAsync();
 
@@ -120,7 +118,7 @@ namespace eBooksBackend.Data.Controllers.Users
             using (var sha256 = SHA256.Create())
             {
                 byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower(); // Pretvara bajtove u heksadecimalni string
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower(); 
             }
         }
     }
