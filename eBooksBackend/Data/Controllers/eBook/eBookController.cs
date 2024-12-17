@@ -17,24 +17,77 @@ namespace eBooksBackend.Data.Controllers.eBook
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Models.eBook>>> GeteBooks()
+        public async Task<ActionResult<List<Models.eBook>>> GetAllEBooks()
         {
-            if (_dbContext.eBook == null)
+            var ebooks = await _dbContext.eBook.ToListAsync();
+            return Ok(ebooks);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Models.eBook>> GetEBookById(int id)
+        {
+            var ebook = await _dbContext.eBook.FindAsync(id);
+
+            if (ebook == null)
             {
-                return NotFound("Database table is empty or null.");
+                return NotFound($"eBook with ID {id} not found.");
             }
 
-            var list = await _dbContext.eBook.ToListAsync();
-            return Ok(list);
+            return Ok(ebook);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Models.eBook>> CreateEBook(Models.eBook ebook)
+        public async Task<ActionResult<Models.eBook>> CreateEBook([FromBody] Models.eBook ebook)
         {
+            if (ebook == null)
+            {
+                return BadRequest("Invalid eBook data.");
+            }
+
+            ebook.CreatedAt = DateTime.UtcNow;
+
             _dbContext.eBook.Add(ebook);
             await _dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GeteBooks), new { id = ebook.Id }, ebook);
+            return CreatedAtAction(nameof(GetEBookById), new { id = ebook.Id }, ebook);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateEBook(int id, [FromBody] Models.eBook updatedEBook)
+        {
+            var existingEBook = await _dbContext.eBook.FindAsync(id);
+            if (existingEBook == null)
+            {
+                return NotFound($"eBook with ID {id} not found.");
+            }
+
+            existingEBook.Title = updatedEBook.Title;
+            existingEBook.Author = updatedEBook.Author;
+            existingEBook.Description = updatedEBook.Description;
+            existingEBook.Price = updatedEBook.Price;
+            existingEBook.Path = updatedEBook.Path;
+            existingEBook.PublishedDate = updatedEBook.PublishedDate;
+
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteEBook(int id)
+        {
+            var ebook = await _dbContext.eBook.FindAsync(id);
+
+            if (ebook == null)
+            {
+                return NotFound($"eBook with ID {id} not found.");
+            }
+
+            _dbContext.eBook.Remove(ebook);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok($"eBook with ID {id} deleted.");
         }
     }
 }

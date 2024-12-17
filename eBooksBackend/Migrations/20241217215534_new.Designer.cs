@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eBooksBackend.Data;
 
@@ -11,9 +12,11 @@ using eBooksBackend.Data;
 namespace eBooksBackend.Migrations
 {
     [DbContext(typeof(eBookStoreDbContext))]
-    partial class eBookStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241217215534_new")]
+    partial class @new
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

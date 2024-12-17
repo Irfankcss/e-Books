@@ -15,5 +15,7 @@ namespace eBooksBackend.Data
         public DbSet<Review> reviews { get; set; }
         public DbSet<Category> categories { get; set; }
         public DbSet<eBookCategory> eBookCategories { get; set; }
+
+        public DbSet<OrderItem> orderItems { get; set; }
     }
 }
