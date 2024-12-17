@@ -101,13 +101,20 @@ namespace eBooksBackend.Data.Controllers.Users
             }
 
             user.PasswordHash = HashPassword(user.PasswordHash);
-
-
             user.CreatedAt = DateTime.UtcNow;
-            user.Role = string.IsNullOrEmpty(user.Role) ? "User" : user.Role;
-
+            user.Role = string.IsNullOrEmpty(user.Role)||user.Role=="string" ? "User" : user.Role;
 
             _dbContext.users.Add(user);
+            await _dbContext.SaveChangesAsync();
+
+            var cart = new Cart
+            {
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _dbContext.carts.Add(cart);
             await _dbContext.SaveChangesAsync();
 
             return Ok(new { Message = "User created successfully.", UserId = user.Id });
@@ -118,7 +125,7 @@ namespace eBooksBackend.Data.Controllers.Users
             using (var sha256 = SHA256.Create())
             {
                 byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower(); 
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
     }
