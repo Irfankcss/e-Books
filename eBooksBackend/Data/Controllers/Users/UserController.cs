@@ -1,6 +1,10 @@
 ﻿using eBooksBackend.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -82,7 +86,7 @@ namespace eBooksBackend.Data.Controllers.Users
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("CreateUser")]
         public async Task<ActionResult> CreateUser([FromBody] User user)
         {
             if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
@@ -102,7 +106,7 @@ namespace eBooksBackend.Data.Controllers.Users
 
             user.PasswordHash = HashPassword(user.PasswordHash);
             user.CreatedAt = DateTime.UtcNow;
-            user.Role = string.IsNullOrEmpty(user.Role)||user.Role=="string" ? "User" : user.Role;
+            user.Role = string.IsNullOrEmpty(user.Role) || user.Role == "string" ? "User" : user.Role;
 
             _dbContext.users.Add(user);
             await _dbContext.SaveChangesAsync();
@@ -117,7 +121,47 @@ namespace eBooksBackend.Data.Controllers.Users
             _dbContext.carts.Add(cart);
             await _dbContext.SaveChangesAsync();
 
-            return Ok(new { Message = "User created successfully.", UserId = user.Id });
+            var token = GenerateJwtToken(user);
+
+            return Ok(new { Message = "User created successfully.", Token = token });
+        }
+
+        //[HttpPost("SignIn")]
+        //public async Task<ActionResult> SignIn([FromBody] User login)
+        //{
+        //    var user = await _dbContext.users.FirstOrDefaultAsync(u => u.Username == login.Username);
+
+        //    if (user == null || user.PasswordHash != HashPassword(login.PasswordHash))
+        //    {
+        //        return Unauthorized("Invalid username or password.");
+        //    }
+
+        //    var token = GenerateJwtToken(user);
+
+        //    return Ok(new { Message = "Login successful.", Token = token });
+        //}
+
+        private string GenerateJwtToken(User user)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourVerySecureSuperLongSecretKeyThatIsAtLeast32Characters!"));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: "eBooksBackend",
+                audience: "eBooksBackend",
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private string HashPassword(string password)

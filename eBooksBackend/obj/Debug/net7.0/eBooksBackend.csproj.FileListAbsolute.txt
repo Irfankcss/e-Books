@@ -78,3 +78,5 @@ C:\Users\Irfan\Documents\GitHub\e-Books\eBooksBackend\bin\Debug\net7.0\Swashbuck
 C:\Users\Irfan\Documents\GitHub\e-Books\eBooksBackend\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Irfan\Documents\GitHub\e-Books\eBooksBackend\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\Irfan\Documents\GitHub\e-Books\eBooksBackend\obj\Debug\net7.0\eBooksBackend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Irfan\Documents\GitHub\e-Books\eBooksBackend\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\Irfan\Documents\GitHub\e-Books\eBooksBackend\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
