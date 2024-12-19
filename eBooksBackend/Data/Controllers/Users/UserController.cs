@@ -87,29 +87,36 @@ namespace eBooksBackend.Data.Controllers.Users
         }
 
         [HttpPost("CreateUser")]
-        public async Task<ActionResult> CreateUser([FromBody] User user)
+        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
-            if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
+            if (string.IsNullOrEmpty(createUserDto.Username) || string.IsNullOrEmpty(createUserDto.Password))
             {
                 return BadRequest("Username and Password are required.");
             }
 
-            if (_dbContext.users.Any(u => u.Username == user.Username))
+            if (_dbContext.users.Any(u => u.Username == createUserDto.Username))
             {
                 return Conflict("A user with this username already exists.");
             }
 
-            if (_dbContext.users.Any(u => u.Email == user.Email))
+            if (_dbContext.users.Any(u => u.Email == createUserDto.Email))
             {
                 return Conflict("A user with this email already exists.");
             }
 
-            user.PasswordHash = HashPassword(user.PasswordHash);
-            user.CreatedAt = DateTime.UtcNow;
-            user.Role = string.IsNullOrEmpty(user.Role) || user.Role == "string" ? "User" : user.Role;
+            var user = new User
+            {
+                Username = createUserDto.Username,
+                PasswordHash = HashPassword(createUserDto.Password),
+                Email = createUserDto.Email,
+                BirthDate = createUserDto.BirthDate,
+                Role = "User", 
+                CreatedAt = DateTime.UtcNow
+            };
 
             _dbContext.users.Add(user);
             await _dbContext.SaveChangesAsync();
+
 
             var cart = new Cart
             {
@@ -123,7 +130,17 @@ namespace eBooksBackend.Data.Controllers.Users
 
             var token = GenerateJwtToken(user);
 
-            return Ok(new { Message = "User created successfully.", Token = token });
+            var userResponse = new CreateUserResponse
+            {
+                Username = user.Username,
+                Email = user.Email,
+                CreatedAt = user.CreatedAt,
+                BirthDate = user.BirthDate,
+                Id = user.Id,
+                Role = user.Role
+            };
+
+            return Ok(new { Message = "User created successfully.", Token = token, User = userResponse });
         }
 
         //[HttpPost("SignIn")]
@@ -172,5 +189,12 @@ namespace eBooksBackend.Data.Controllers.Users
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
+    }
+    public class CreateUserDto
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

@@ -7,6 +7,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using eBooksBackend.Data.Controllers.Users;
 
 namespace eBooksBackend.Controllers
 {
@@ -27,6 +30,39 @@ namespace eBooksBackend.Controllers
             var redirectUrl = Url.Action("GoogleResponse", "Auth");
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, "Google");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            if (string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password))
+            {
+                return BadRequest("Email and Password are required.");
+            }
+
+            var user = await _dbContext.users.FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
+            if (user == null)
+            {
+                return Unauthorized("Invalid email or password.");
+            }
+            var hashedPassword = (HashPassword(loginRequest.Password));
+            if (user.PasswordHash != hashedPassword)
+            {
+                return Unauthorized("Invalid email or password.");
+            }
+
+            var token = GenerateJwtToken(user);
+            var userResponse = new CreateUserResponse
+            {
+                Username = user.Username,
+                Email = user.Email,
+                CreatedAt = user.CreatedAt,
+                BirthDate = user.BirthDate,
+                Id = user.Id,
+                Role = user.Role
+            };
+
+            return Ok(new {User = userResponse, Token = token, Message = "Login successful" });
         }
 
         [HttpGet("GoogleResponse")]
@@ -63,6 +99,15 @@ namespace eBooksBackend.Controllers
 
                 existingUser = newUser;
             }
+            var userResponse = new CreateUserResponse
+            {
+                Username = existingUser.Username,
+                Email = existingUser.Email,
+                CreatedAt = existingUser.CreatedAt,
+                BirthDate = existingUser.BirthDate,
+                Id = existingUser.Id,
+                Role = existingUser.Role
+            };
 
             var token = GenerateJwtToken(existingUser);
 
@@ -70,12 +115,7 @@ namespace eBooksBackend.Controllers
             {
                 Message = "Google login successful.",
                 Token = token,
-                User = new
-                {
-                    existingUser.Id,
-                    existingUser.Username,
-                    existingUser.Email
-                }
+                User = userResponse
             });
         }
 
@@ -100,6 +140,20 @@ namespace eBooksBackend.Controllers
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
+
+        public class LoginRequest
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
         }
     }
 }
