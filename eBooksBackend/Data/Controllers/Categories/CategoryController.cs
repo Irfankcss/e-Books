@@ -45,6 +45,7 @@ namespace eBooksBackend.Data.Controllers.Categories
 
             existingCategory.Name = updatedCategory.Name==""?existingCategory.Name:updatedCategory.Name;
             existingCategory.Description = updatedCategory.Description==""?existingCategory.Description:updatedCategory.Description;
+            existingCategory.Image = string.IsNullOrEmpty(updatedCategory.Image)?existingCategory.Image:updatedCategory.Image;
 
             await _dbContext.SaveChangesAsync();
             return NoContent();

@@ -66,6 +66,7 @@ namespace eBooksBackend.Data.Controllers.eBook
             existingEBook.Description = updatedEBook.Description;
             existingEBook.Price = updatedEBook.Price;
             existingEBook.Path = updatedEBook.Path;
+            existingEBook.Cover = updatedEBook.Cover;
             existingEBook.PublishedDate = updatedEBook.PublishedDate;
 
             await _dbContext.SaveChangesAsync();

@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family: Century Gothic, sans-serif;
 }
 
 .App-logo {
@@ -38,7 +39,8 @@
 }
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Century,serif;
+  background-color: #ccc9bc;
 }
 
 nav {
@@ -56,6 +58,7 @@ nav {
 nav .logo-container {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 nav .logo {
@@ -104,7 +107,7 @@ nav .logout-button {
 }
 
 nav .logout-button:hover {
-  background-color: #b77a4f;
+  background-color: #9f9a85;
 }
 
 

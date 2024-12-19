@@ -41,11 +41,11 @@ function App() {
             </button>
             <ul>
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/shop">Shop</Link></li>
+              <li><Link to="/shop">Store</Link></li>
               {isLoggedIn ? (
                   <>
                     <li><Link to="/profile">Profile</Link></li>
-                    <button className="logout-button" onClick={handleLogout}>Logout</button>
+                    <button className="logout-button" onClick={handleLogout}>Log out</button>
                   </>
               ) : (
                   <>
