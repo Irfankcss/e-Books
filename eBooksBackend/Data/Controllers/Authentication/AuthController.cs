@@ -60,6 +60,7 @@ namespace eBooksBackend.Controllers
                 BirthDate = user.BirthDate,
                 Id = user.Id,
                 Role = user.Role
+                , Photo= user.Photo
             };
 
             return Ok(new {User = userResponse, Token = token, Message = "Login successful" });

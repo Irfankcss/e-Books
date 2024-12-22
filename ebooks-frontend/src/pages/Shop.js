@@ -88,7 +88,7 @@ function Shop() {
 
             {searchInput && <div className="search-result-text-reset-container"><h3>Search Results for: " {searchInput} "</h3>
                 <a className="reset-button" onClick={resetSearch}>
-                Reset Search
+                Clear ❌
             </a></div>}
 
             <div className="ebook-grid">

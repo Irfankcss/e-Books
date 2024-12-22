@@ -81,6 +81,7 @@ namespace eBooksBackend.Data.Controllers.Users
             user.BirthDate = upUser.BirthDate == DateTime.MinValue ? user.BirthDate : upUser.BirthDate;
             user.Email = upUser.Email == null ? user.Email : upUser.Email;
             user.Role = upUser.Role == null ? user.Role : upUser.Role;
+            user.Photo = string.IsNullOrEmpty(upUser.Photo)?user.Photo:upUser.Photo;
             _dbContext.users.Update(user);
             await _dbContext.SaveChangesAsync();
             return Ok(user);
@@ -111,7 +112,8 @@ namespace eBooksBackend.Data.Controllers.Users
                 Email = createUserDto.Email,
                 BirthDate = createUserDto.BirthDate,
                 Role = "User", 
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Photo= "https://i.imgur.com/P0wkA6K.png"
             };
 
             _dbContext.users.Add(user);
@@ -137,7 +139,8 @@ namespace eBooksBackend.Data.Controllers.Users
                 CreatedAt = user.CreatedAt,
                 BirthDate = user.BirthDate,
                 Id = user.Id,
-                Role = user.Role
+                Role = user.Role,
+                Photo = user.Photo,
             };
 
             return Ok(new { Message = "User created successfully.", Token = token, User = userResponse });
@@ -196,5 +199,6 @@ namespace eBooksBackend.Data.Controllers.Users
         public string Password { get; set; }
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
+
     }
 }
