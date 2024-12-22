@@ -47,7 +47,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(96, 88, 53, 0.6);
+  background-color: rgb(122, 113, 92);
   padding: 10px 20px;
   position: sticky;
   top: 0;
