@@ -27,7 +27,7 @@ function Shop() {
                 const categoriesData = await categoriesResponse.json();
 
                 setEBooks(eBooksData);
-                setFilteredEBooks(eBooksData); // Initialize filtered eBooks with all eBooks
+                setFilteredEBooks(eBooksData);
                 setCategories(categoriesData);
             } catch (err) {
                 setError(err.message);
@@ -41,10 +41,10 @@ function Shop() {
 
     const scrollCategories = (direction) => {
         if (categoriesGridRef.current) {
-            const scrollAmount = 200;
+            const scrollAmount = 350;
             categoriesGridRef.current.scrollBy({
                 left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth',
+                behavior: "smooth",
             });
         }
     };
@@ -98,6 +98,7 @@ function Shop() {
                         <h2>{ebook.title}</h2>
                         <p>By: {ebook.author}</p>
                         <p>Price: ${ebook.price.toFixed(2)}</p>
+                        <p>Rating: 4.5</p>
                     </div>
                 ))}
             </div>

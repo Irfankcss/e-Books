@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ProfileCSS from '../pages-css/ProfileCSS.css';
+import '../pages-css/ProfileCSS.css';
 
 function Profile() {
     const [user, setUser] = useState(null);
@@ -49,7 +49,6 @@ function Profile() {
             const queryParams = new URLSearchParams({
                 id: editedUser.id,
                 username: editedUser.username || null,
-                passwordHash: editedUser.passwordHash || null,
                 email: editedUser.email || null,
                 birthDate: editedUser.birthDate || null,
                 photo: editedUser.photo || null,

@@ -6,6 +6,7 @@ import Profile from "./pages/Profile";
 import './App.css';
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import MyLibrary from "./pages/MyLibrary";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,6 +45,7 @@ function App() {
               <li><Link to="/shop">Store</Link></li>
               {isLoggedIn ? (
                   <>
+                    <li><Link to="/mylibrary" className="my-library">My Library</Link></li>
                     <li><Link to="/profile">Profile</Link></li>
                     <button className="logout-button" onClick={handleLogout}>Log out</button>
                   </>
@@ -58,13 +60,19 @@ function App() {
 
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/mylibrary" element={<MyLibrary />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignUp onLogin={handleLogin}/>} />
           </Routes>
         </div>
+        <div className="footer">
+          <p>&copy; 2024 e-Books. All rights reserved.</p>
+          <a href="https://github.com/Irfankcss" target="_blank" rel="noopener noreferrer">Made with ❤️ by Irfan</a>
+        </div>
       </Router>
+
   );
 }
 
