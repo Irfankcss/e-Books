@@ -54,7 +54,9 @@
     margin-bottom: 10px;
     font-weight: bold;
 }
-
+.ebook-price{
+    font-size: 20px;
+}
 .purchase-button {
     padding: 10px 20px;
     font-size: 1rem;

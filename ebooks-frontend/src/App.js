@@ -8,6 +8,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import MyLibrary from "./pages/MyLibrary";
 import Ebook from "./pages/Ebook";
+import Logo from "./components/Logo/Logo";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,9 +34,7 @@ function App() {
       <Router>
         <div>
           <nav>
-            <div className="logo-container">
-              <img className="logo" src="/images/eBooksNavLogo.png" alt="logo" />
-            </div>
+            <Logo/>
             <button className="nav-toggle" onClick={() => document.querySelector('nav ul').classList.toggle('active')}>
               <span></span>
               <span></span>

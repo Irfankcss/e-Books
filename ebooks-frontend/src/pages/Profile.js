@@ -143,7 +143,7 @@ function Profile() {
                     ))}
                 </div>
                 {books.length > 4 && (
-                    <button className="view-all-button">
+                    <button className="view-all-button" onClick={() => navigate('/mylibrary')}>
                         View All
                     </button>
                 )}

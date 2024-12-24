@@ -51,7 +51,7 @@ function MyLibrary() {
         if (allBooks.length && books.length) {
             const ownedBookIds = new Set(books.map((book) => book.id));
             const filteredBooks = allBooks.filter((book) => !ownedBookIds.has(book.id));
-            setRecommendedBooks(filteredBooks.slice(0, 5));
+            setRecommendedBooks(filteredBooks.slice(0, 4));
         }
     }, [allBooks, books]);
 
@@ -102,6 +102,12 @@ function MyLibrary() {
         }
     };
 
+    function handleOpenBook(id) {
+        return () => {
+            navigate(`/ebook/${id}`);
+        };
+    }
+
     return (
         <div className="library-container">
             <h3>Owned Books:</h3>
@@ -116,7 +122,7 @@ function MyLibrary() {
                                 className="review-button"
                                 onClick={() => handleReviewClick(book)}
                             >
-                                Give a Review
+                                Leave a Review
                             </button>
                         </div>
                     </div>
@@ -126,7 +132,7 @@ function MyLibrary() {
             <h3>Recommended Books:</h3>
             <div className="books-container" id="recommended">
                 {recommendedBooks.map((book) => (
-                    <div className="book-card-container" key={book.id}>
+                    <div className="book-card-container" key={book.id} onClick={handleOpenBook(book.id)}>
                         <img className="book-cover-img" src={book.cover} alt="Book cover unavailable" />
                         <div className="book-info-container">
                             <p>{book.title}</p>

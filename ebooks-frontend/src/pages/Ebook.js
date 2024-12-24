@@ -51,15 +51,19 @@ function Ebook() {
             </div>
             <div className="reviews-section">
                 <h3>Reviews</h3>
-                <ul className="reviews-list">
-                    {reviews.map((review, index) => (
-                        <li key={index} className="review-item">
-                            <p className="review-username">{review.user.username}</p>
-                            <p className="review-rating">Rating: {review.rating}</p>
-                            <p className="review-content">{review.content}</p>
-                        </li>
-                    ))}
-                </ul>
+                {reviews.length > 0 ? (
+                    <ul className="reviews-list">
+                        {reviews.map((review, index) => (
+                            <li key={index} className="review-item">
+                                <p className="review-username">{review.user.username}</p>
+                                <p className="review-rating">Rating: {review.rating}</p>
+                                <p className="review-content">{review.content}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="no-reviews-message">No reviews yet. Purchase to leave a review.</p>
+                )}
             </div>
         </div>
 
