@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../pages-css/StoreCSS.css';
+import {useNavigate} from "react-router-dom";
 
 function Shop() {
     const [eBooks, setEBooks] = useState([]);
@@ -66,6 +67,11 @@ function Shop() {
         setFilteredEBooks(eBooks);
     };
 
+    const navigate = useNavigate();
+    const handleBookClick = (bookId) => {
+        navigate(`/ebook/${bookId}`);
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
@@ -93,12 +99,11 @@ function Shop() {
 
             <div className="ebook-grid">
                 {filteredEBooks.map((ebook) => (
-                    <div className="ebook-card" key={ebook.id}>
+                    <div className="ebook-card" key={ebook.id} onClick={() => handleBookClick(ebook.id)} style={{cursor:"pointer"}}>
                         <img src={ebook.cover} alt={ebook.title} className="ebook-cover" />
                         <h2>{ebook.title}</h2>
                         <p>By: {ebook.author}</p>
                         <p>Price: ${ebook.price.toFixed(2)}</p>
-                        <p>Rating: 4.5</p>
                     </div>
                 ))}
             </div>

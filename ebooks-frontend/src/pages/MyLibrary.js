@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import  '../pages-css/MyLibraryCSS.css';
+import '../pages-css/MyLibraryCSS.css';
 
 function MyLibrary() {
     const [books, setBooks] = useState([]);
     const [allBooks, setAllBooks] = useState([]);
     const [recommendedBooks, setRecommendedBooks] = useState([]);
+    const [selectedBook, setSelectedBook] = useState(null);
+    const [reviewForm, setReviewForm] = useState({ content: '', rating: 0 });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,7 +48,6 @@ function MyLibrary() {
     };
 
     useEffect(() => {
-
         if (allBooks.length && books.length) {
             const ownedBookIds = new Set(books.map((book) => book.id));
             const filteredBooks = allBooks.filter((book) => !ownedBookIds.has(book.id));
@@ -56,6 +57,49 @@ function MyLibrary() {
 
     const handleViewMore = () => {
         navigate('/shop');
+    };
+
+    const handleReviewClick = (book) => {
+        setSelectedBook(book);
+        setReviewForm({ content: '', rating: 0 });
+    };
+
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setReviewForm({ ...reviewForm, [name]: value });
+    };
+
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        const userData = JSON.parse(localStorage.getItem('user'));
+
+        if (!userData) return alert('User not logged in.');
+
+        const reviewData = {
+            content: reviewForm.content,
+            rating: parseInt(reviewForm.rating, 10),
+            userId: userData.id,
+            eBookId: selectedBook.id,
+        };
+
+        try {
+            const response = await fetch('https://localhost:44332/api/Review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(reviewData),
+            });
+
+            if (response.ok) {
+                alert('Review submitted successfully!');
+                setSelectedBook(null);
+            } else {
+                alert('Failed to submit review.');
+            }
+        } catch (error) {
+            alert('An error occurred while submitting the review.');
+        }
     };
 
     return (
@@ -68,6 +112,12 @@ function MyLibrary() {
                         <div className="book-info-container">
                             <p>{book.title}</p>
                             <p>By {book.author}</p>
+                            <button
+                                className="review-button"
+                                onClick={() => handleReviewClick(book)}
+                            >
+                                Give a Review
+                            </button>
                         </div>
                     </div>
                 ))}
@@ -85,8 +135,12 @@ function MyLibrary() {
                     </div>
                 ))}
                 {recommendedBooks.length > 0 && (
-                    <div className="book-card-container" onClick={handleViewMore} >
-                        <img className="book-cover-img-more" src="https://static.thenounproject.com/png/4939915-200.png" alt="Unavailable" />
+                    <div className="book-card-container" onClick={handleViewMore}>
+                        <img
+                            className="book-cover-img-more"
+                            src="https://static.thenounproject.com/png/4939915-200.png"
+                            alt="Unavailable"
+                        />
                         <div className="book-info-container">
                             <p>Browse other books</p>
                         </div>
@@ -94,6 +148,35 @@ function MyLibrary() {
                 )}
             </div>
 
+            {selectedBook && (
+                <div className="review-form-modal">
+                    <form className="review-form" onSubmit={handleReviewSubmit}>
+                        <h3>Review for {selectedBook.title}</h3>
+                        <textarea
+                            name="content"
+                            value={reviewForm.content}
+                            onChange={handleFormChange}
+                            placeholder="Write your review..."
+                            required
+                        ></textarea>
+                        <input
+                            type="number"
+                            name="rating"
+                            className="rating-input"
+                            value={reviewForm.rating}
+                            onChange={handleFormChange}
+                            min="1"
+                            max="5"
+                            placeholder="Rating (1-5)"
+                            required
+                        />
+                        <button type="submit" className="submit-button">Submit Review</button>
+                        <button type="button" className="cancel-button" onClick={() => setSelectedBook(null)}>
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+            )}
         </div>
     );
 }

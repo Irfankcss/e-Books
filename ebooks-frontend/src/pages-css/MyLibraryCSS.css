@@ -33,6 +33,16 @@
     text-align: center;
     transition: transform 0.3s ease;
 }
+.book-card-container button{
+    background-color: #79705b;
+    border: #79705b 1px solid;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 10px 20px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+}
 .book-card-container:hover {
     transform: scale(1.05);
 
@@ -61,8 +71,103 @@
     color: #333;
     word-wrap: break-word;
 }
+.review-form-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-/* Responsive Adjustments */
+.review-form {
+    background-color: #79705b;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.review-form h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #bebebe;
+}
+
+.review-form textarea {
+    width: 90%;
+    height: 80px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #c7c7c7;
+    background-color: #e3dbc0;
+    border-radius: 5px;
+    resize: none;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.review-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.review-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+    background-color: #e3dbc0;
+}
+
+.review-form .submit-button {
+    background-color: #caa176;
+    color: white;
+}
+
+.review-form .submit-button:hover {
+    background-color: #b7946a;
+}
+
+.review-form .cancel-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.review-form .cancel-button:hover {
+    background-color: #d7312e;
+}
+
+@media (max-width: 480px) {
+    .review-form {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .review-form h2 {
+        font-size: 1.2rem;
+    }
+
+    .review-form button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
 @media (max-width: 768px) {
     .books-container {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

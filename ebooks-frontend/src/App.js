@@ -7,6 +7,7 @@ import './App.css';
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import MyLibrary from "./pages/MyLibrary";
+import Ebook from "./pages/Ebook";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -65,6 +66,7 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
             <Route path="/signup" element={<SignUp onLogin={handleLogin}/>} />
+            <Route path="/ebook/:id" element={<Ebook />} />
           </Routes>
         </div>
         <div className="footer">
