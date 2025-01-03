@@ -4,8 +4,9 @@ function SignInInputs({email,password,handleInputChange,handleSignInSubmit}) {
     return (
         <div>
             <div className="input-container">
-                <a>Email:</a>
+                <a className="email">Email:</a>
                 <input
+                    className="email-input"
                     name="email"
                     value={email}
                     onChange={handleInputChange}
@@ -13,16 +14,16 @@ function SignInInputs({email,password,handleInputChange,handleSignInSubmit}) {
                     required
                 />
 
-                <a>Password:</a>
+                <a className="password">Password:</a>
                 <input
-
+                    className="password-input"
                     name="password"
                     value={password}
                     onChange={handleInputChange}
                     type="password"
                     required/>
 
-                <button onClick={handleSignInSubmit}>Sign In</button>
+                <button className="sign-in-btn" onClick={handleSignInSubmit}>Sign In</button>
             </div>
         </div>
     );

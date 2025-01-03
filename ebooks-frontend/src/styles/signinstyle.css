@@ -1,0 +1,114 @@
+.signin-all-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url("/public/images/signinbg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}
+
+.sign-in-container {
+    background-color: rgba(122, 122, 122, 0.28);
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    width: 550px;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Stil za inpute */
+.email, .password {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    width: 100%;
+    text-align: left;
+}
+
+.email-input, .password-input {
+    width: 100%;
+    max-width: 350px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    padding-left: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.sign-in-btn {
+    width: 100%;
+    max-width: 350px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    background-color: #caa176;
+    color: #000000;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.sign-in-btn:hover {
+    background-color: rgb(121, 112, 91);
+    color: #ffffff;
+}
+
+.sign-in-container a {
+    color: white;
+    text-decoration: none;
+    margin-top: 15px;
+    text-align: center;
+    display: inline-block;
+}
+
+.sign-in-container a:hover {
+    text-decoration: underline;
+}
+
+.signin-title {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: rgba(213, 181, 137, 0.87);
+}
+
+@media screen and (max-width: 600px) {
+    .signin-all-container {
+        padding-left: 15px;
+        width: 400px;
+    }
+
+    .sign-in-container {
+        width: 90%;
+    }
+
+    .email-input, .password-input, .sign-in-btn {
+        font-size: 14px;
+    }
+
+    .signin-title {
+        font-size: 1.5rem;
+    }
+    .input-container{
+        width: 350px;
+        max-width: 100%;
+    }
+}

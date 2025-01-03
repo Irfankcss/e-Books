@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import SignInInputs from "../components/SignIn/SignInInputs";
 import { useNavigate } from 'react-router-dom';
+import '../styles/signinstyle.css'
 
 
 function SignIn({onLogin}) {
@@ -35,14 +36,17 @@ function SignIn({onLogin}) {
     };
 
     return (
-        <div>
-            <h1>Sign In Page</h1>
+        <div className="signin-all-container">
+            <h1 className="signin-title">Sign In</h1>
+        <div className="sign-in-container">
             <SignInInputs
                 email={formData.email}
                 password={formData.password}
                 handleInputChange={handleInputChange}
                 handleSignInSubmit={handleSignInSubmit}
             />
+            <a href="/signup">Don't have an account? Sign up here.</a>
+        </div>
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import SignUpInputs from "../components/SignUp/SignUpInputs";
 import { useNavigate } from 'react-router-dom';
+import '../styles/signupstyle.css'
 
 function SignUp({onLogin}) {
     const [formData , setFormData] = useState({email: '', password: '', birthDate: Date.now(), username: ''});
@@ -34,8 +35,10 @@ function SignUp({onLogin}) {
 
     }
     return (
-        <div>
-            <h1>Sign Up Page</h1>
+        <div className="signup-container-all">
+            <div className="signup-container">
+        <h2 className="signup-title">Sign Up</h2>
+        <div className="sign-up-container">
             <SignUpInputs
                 email={formData.email}
                 password={formData.password}
@@ -44,6 +47,9 @@ function SignUp({onLogin}) {
                 handleInputChange={handleInputChange}
                 handleSignUpSubmit={handleSignUpSubmit}
             />
+            <a href="/signin">Already have an account? Sign in here.</a>
+        </div>
+        </div>
         </div>
     );
 }

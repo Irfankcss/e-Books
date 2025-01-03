@@ -1,0 +1,113 @@
+
+.signup-container-all {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url("/public/images/signinbg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.signup-container{
+    margin:25px;
+    background-color: rgba(122, 122, 122, 0.28);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.signup-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.signup-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    width: 100%;
+    text-align: left;
+}
+
+.signup-input {
+    width: 100%;
+    max-width: 350px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    padding-left: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+.signup-btn {
+    width: 100%;
+    max-width: 350px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    background-color: #caa176;
+    color: #000000;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.signup-btn:hover {
+    background-color: rgb(121, 112, 91);
+    color: #ffffff;
+}
+
+.signup-container a {
+    color: white;
+    text-decoration: none;
+    margin-top: 15px;
+    text-align: left;
+    display: inline-block;
+}
+
+.signup-container a:hover {
+    text-decoration: underline;
+}
+
+.signup-title {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: rgba(213, 181, 137, 0.87);
+}
+
+@media screen and (max-width: 600px) {
+    .signup-all-container {
+        padding: 20px;
+    }
+
+    .signup-container {
+        width: 90%;
+    }
+
+    .signup-input, .signup-btn {
+        font-size: 14px;
+    }
+
+    .signup-title {
+        font-size: 1.5rem;
+    }
+    .signup-input-container{
+        width: 350px;
+        max-width: 100%;
+    }
+}
