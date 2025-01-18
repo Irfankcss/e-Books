@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../pages-css/StoreCSS.css';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Shop() {
     const [eBooks, setEBooks] = useState([]);
@@ -8,10 +8,14 @@ function Shop() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
     const [searchInput, setSearchInput] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const categoriesGridRef = useRef(null);
 
+    const navigate = useNavigate();
+
+    // Fetch data on component mount
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -28,7 +32,7 @@ function Shop() {
                 const categoriesData = await categoriesResponse.json();
 
                 setEBooks(eBooksData);
-                setFilteredEBooks(eBooksData);
+                setFilteredEBooks(eBooksData); // Initially display all books
                 setCategories(categoriesData);
             } catch (err) {
                 setError(err.message);
@@ -40,6 +44,58 @@ function Shop() {
         fetchData();
     }, []);
 
+    // Central filtering logic triggered whenever `searchQuery` or `selectedCategory` changes
+    useEffect(() => {
+        const filterBooks = async () => {
+            let filtered = [...eBooks];
+
+            // Filter by category if one is selected
+            if (selectedCategory) {
+                try {
+                    setLoading(true);
+                    const response = await fetch(`https://localhost:44332/api/eBookCategory/byCategory/${selectedCategory}`);
+                    if (!response.ok) throw new Error('Failed to fetch books by category');
+
+                    const categoryBooks = await response.json();
+                    const transformedBooks = categoryBooks.map(item => item.eBook);
+                    filtered = transformedBooks;
+                } catch (err) {
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            // Further filter by search query
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                filtered = filtered.filter(
+                    (ebook) =>
+                        ebook.title.toLowerCase().includes(query) ||
+                        ebook.author.toLowerCase().includes(query)
+                );
+            }
+
+            setFilteredEBooks(filtered);
+        };
+
+        filterBooks();
+    }, [searchQuery, selectedCategory, eBooks]);
+
+    const handleSearch = (event) => {
+        event.preventDefault();
+        setSearchQuery(searchInput); // Update searchQuery on form submission
+    };
+
+    const resetSearch = () => {
+        setSearchInput(''); // Clear input field
+        setSearchQuery(''); // Clear search query
+    };
+
+    const resetCategories = () => {
+        setSelectedCategory(null); // Clear selected category
+    };
+
     const scrollCategories = (direction) => {
         if (categoriesGridRef.current) {
             const scrollAmount = 350;
@@ -49,25 +105,11 @@ function Shop() {
             });
         }
     };
-
-    const handleSearch = (event) => {
-        event.preventDefault();
-        setSearchInput(searchQuery);
-        const query = searchQuery.toLowerCase();
-        const filtered = eBooks.filter(
-            (ebook) =>
-                ebook.title.toLowerCase().includes(query) ||
-                ebook.author.toLowerCase().includes(query)
-        );
-        setFilteredEBooks(filtered);
-    };
-    const resetSearch = () => {
-        setSearchQuery('');
-        setSearchInput('');
-        setFilteredEBooks(eBooks);
+    const getCategoryNameById = (id) => {
+        const category = categories.find((cat) => cat.id === id);
+        return category ? category.name : 'Unknown';
     };
 
-    const navigate = useNavigate();
     const handleBookClick = (bookId) => {
         navigate(`/ebook/${bookId}`);
     };
@@ -83,8 +125,8 @@ function Shop() {
                         type="text"
                         placeholder="Search titles/writers..."
                         className="search-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                     />
                     <button type="submit" className="search-button">
                         Search
@@ -92,18 +134,35 @@ function Shop() {
                 </form>
             </div>
 
-            {searchInput && <div className="search-result-text-reset-container"><h3>Search Results for: " {searchInput} "</h3>
-                <a className="reset-button" onClick={resetSearch}>
-                Clear ❌
-            </a></div>}
+            {searchQuery && (
+                <div className="search-result-text-reset-container">
+                    <h3 className="search-result-text">Search Results for: "{searchQuery}"</h3>
+                    <a className="reset-button" onClick={resetSearch}>
+                        Clear ❌
+                    </a>
+                </div>
+            )}
+            {selectedCategory && (
+                <div className="search-result-text-reset-container">
+                    <h3 className="search-result-text">Category: "{getCategoryNameById(selectedCategory)}"</h3>
+                    <a className="reset-button" onClick={resetCategories}>
+                        Clear ❌
+                    </a>
+                </div>
+            )}
 
             <div className="ebook-grid">
                 {filteredEBooks.map((ebook) => (
-                    <div className="ebook-card" key={ebook.id} onClick={() => handleBookClick(ebook.id)} style={{cursor:"pointer"}}>
+                    <div
+                        className="ebook-card"
+                        key={ebook.id}
+                        onClick={() => handleBookClick(ebook.id)}
+                        style={{ cursor: "pointer" }}
+                    >
                         <img src={ebook.cover} alt={ebook.title} className="ebook-cover" />
                         <h2>{ebook.title}</h2>
                         <p>By: {ebook.author}</p>
-                        <p>Price: ${ebook.price.toFixed(2)}</p>
+                        <p>Price: ${ebook.price ? ebook.price.toFixed(2) : 'N/A'}</p>
                     </div>
                 ))}
             </div>
@@ -114,8 +173,12 @@ function Shop() {
                     &lt;
                 </button>
                 <div className="categories-grid" ref={categoriesGridRef}>
-                    {categories.map((category, index) => (
-                        <div className="category-card" key={index}>
+                    {categories.map((category) => (
+                        <div
+                            className={`category-card ${selectedCategory === category.id ? 'selected' : ''}`}
+                            key={category.id}
+                            onClick={() => setSelectedCategory(category.id)}
+                        >
                             <div className="category-image-container">
                                 <img src={category.image} alt={category.name} className="category-image" />
                             </div>
