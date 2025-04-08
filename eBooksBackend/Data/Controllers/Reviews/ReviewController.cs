@@ -21,7 +21,6 @@ namespace eBooksBackend.Data.Controllers.Reviews
                 .Include(r => r.User)
                 .ToListAsync();
 
-            if (!reviews.Any()) return NotFound("No reviews found for this book.");
             return Ok(reviews);
         }
 
@@ -33,7 +32,6 @@ namespace eBooksBackend.Data.Controllers.Reviews
                 .Include(r => r.eBook)
                 .ToListAsync();
 
-            if (!reviews.Any()) return NotFound("No reviews found for this user.");
             return Ok(reviews);
         }
 

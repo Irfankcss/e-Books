@@ -1,4 +1,5 @@
-﻿using eBooksBackend.Data.Models;
+﻿using eBooksBackend.Data.Controllers.Payments;
+using eBooksBackend.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,6 +103,52 @@ namespace eBooksBackend.Data.Controllers.Orders
             }).ToList();
 
             return Ok(orderDTOs);
+        }
+
+        [HttpPost("processPayment")]
+        public async Task<ActionResult> ProcessPayment([FromBody] PaymentDto payment)
+        {
+            try
+            {
+                if (payment == null || payment.BookId <= 0 || payment.UserId <=0 || string.IsNullOrEmpty(payment.PaymentId))
+                {
+                    return BadRequest("Invalid payment data.");
+                }
+
+                var eBook = await _dbContext.eBook.FindAsync(payment.BookId);
+                if (eBook == null)
+                {
+                    return NotFound("Book not found.");
+                }
+
+                var order = new Order
+                {
+                    UserId = payment.UserId,
+                    TotalAmount = eBook.Price,
+                    Status = payment.Status,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    OrderDate = DateTime.UtcNow,
+                    OrderItems = new List<OrderItem>
+            {
+                new OrderItem
+                {
+                    eBookId = payment.BookId,
+                    Quantity = 1,
+                    Price = eBook.Price
+                }
+            }
+                };
+
+                _dbContext.orders.Add(order);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok(new { Message = "Payment processed and order created successfully.", OrderId = order.Id });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
 

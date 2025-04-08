@@ -9,6 +9,7 @@ function Ebook() {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchBookDetails = async () => {
@@ -26,6 +27,7 @@ function Ebook() {
                 }
             } catch (err) {
                 console.error('Error fetching data:', err);
+                setError('Failed to load book details');
             } finally {
                 setLoading(false);
             }
@@ -34,14 +36,42 @@ function Ebook() {
         fetchBookDetails();
     }, [id]);
 
-    if (loading) return <p>Loading...</p>;
+    const handleApprove = async (details) => {
+        try {
+            const response = await fetch("https://localhost:44332/api/Payment/process", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    bookId: book.id,
+                    userId: JSON.parse(localStorage.getItem('user')).id,
+                    orderId: details.id,
+                    paymentId: details.id,
+                    status: details.status,
+                    amount: book.price
+                })
+            });
 
-    if (!book) return <p>Book not found</p>;
-
-    const handleApprove = (orderID) => {
-        console.log('Order approved with ID:', orderID);
-        setPurchaseComplete(true);
+            if (response.ok) {
+                const result = await response.json();
+                setPurchaseComplete(true);
+                alert("Purchase successful! Thank you for your purchase.");
+            } else {
+                const error = await response.json();
+                throw new Error(error.message || 'Payment processing failed');
+            }
+        } catch (error) {
+            console.error("Error during payment processing:", error);
+            setError(error.message || "Error during purchase. Please try again.");
+            alert("Error during purchase. Please try again.");
+        }
     };
+
+    if (loading) return <div className="loading">Loading...</div>;
+    if (error) return <div className="error">{error}</div>;
+    if (!book) return <div className="error">Book not found</div>;
 
     return (
         <div className="ebook-details">
@@ -55,29 +85,39 @@ function Ebook() {
                     <p className="ebook-price">Price: ${book.price.toFixed(2)}</p>
 
                     {purchaseComplete ? (
-                        <p className="purchase-success">Thank you for your purchase!</p>
+                        <div className="purchase-success">
+                            <h2>Thank you for your purchase!</h2>
+                            <p>You can now download and enjoy your book.</p>
+                        </div>
                     ) : (
-                        <PayPalScriptProvider options={{ "client-id": "ATeGTLOFyvFOctWSiQ78_HLtmJ7ksJf3mSDyaXZyqbGZwrPwkj8LBpv8ndtZ4g6HBr8hmYR9rlvtFBcB" }}>
+                        <PayPalScriptProvider options={{ 
+                            "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
+                            currency: "USD"
+                        }}>
                             <PayPalButtons
                                 style={{ layout: 'vertical' }}
                                 createOrder={(data, actions) => {
                                     return actions.order.create({
+                                        intent: "CAPTURE",
                                         purchase_units: [
                                             {
                                                 amount: {
-                                                    value: book.price.toFixed(2),
+                                                    currency_code: "USD",
+                                                    value: book.price.toFixed(2)
                                                 },
-                                            },
+                                                description: `Purchase of ${book.title}`
+                                            }
                                         ],
                                     });
                                 }}
                                 onApprove={(data, actions) => {
                                     return actions.order.capture().then((details) => {
-                                        handleApprove(data.orderID);
+                                        handleApprove(details);
                                     });
                                 }}
                                 onError={(err) => {
                                     console.error('PayPal Checkout Error:', err);
+                                    setError('Payment failed. Please try again.');
                                 }}
                             />
                         </PayPalScriptProvider>

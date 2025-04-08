@@ -61,6 +61,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddScoped<PaymentService>();
+
 var app = builder.Build();
 
 app.UseSwagger();
